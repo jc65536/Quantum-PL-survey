@@ -17,10 +17,13 @@ def yy(θ:!ℝ,q1:𝔹,q2:𝔹){
 	return (q1,q2);
 }
 
-def initializeTilt[n:!ℕ](qs:𝔹^n,θ:!ℝ) ⇒ [rotY(θ, q) for q in qs]; // (unnecessary, as it is only called with θ=0)
+def initializeTilt[n:!ℕ](qs:𝔹^n,θ:!ℝ){
+	for i in [0..n){ qs[i] := rotY(if i%2=0 then θ else -θ, qs[i]); }
+	return qs;
+}
 
 def run(numSites:!ℕ, steps:!ℕ, couplingJ:!ℝ, fieldH:!ℝ, totalTime:!ℝ){
-	qs := initializeTilt(vector(numSites,0), 0);
+	qs := initializeTilt(vector(numSites,0), π/4);
 	dt := totalTime/steps;
 	repeat steps{
 		for i in 0..numSites-1{

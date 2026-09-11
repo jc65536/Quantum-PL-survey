@@ -28,7 +28,7 @@ def run_simulation(config: Dict[str, Any]) -> np.ndarray:
     steps = int(params.get("trotter_steps", 32))
 
     H = create_hamiltonian_heisenberg(num_sites, J, field)
-    state = common.trotter(num_sites, H, total_time, steps)
+    state = common.trotter(num_sites, H, total_time, steps, init_angle=np.pi / 4)
     return state
 
 

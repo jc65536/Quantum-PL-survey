@@ -113,7 +113,7 @@ def trotterize_heisenberg_xxx(
     num_sites: int, J: float, field: float, total_time: float, steps: int
 ) -> Tuple[Program, Sequence[int]]:
     """Lie–Trotter circuit for the Heisenberg XXX chain with a field using PauliSum tools."""
-    prog = Program()
+    prog = Program(RY((-1)**q * np.pi / 4, q) for q in range(num_sites))
     dt = total_time / steps
 
     # Commuting Pauli sums for each interaction axis and the Z field.

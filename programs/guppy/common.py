@@ -4,7 +4,7 @@ from guppylang.defs import GuppyFunctionDefinition
 from guppylang.std.angles import angle
 from guppylang.std.builtins import comptime, array
 from guppylang.std.debug import state_result
-from guppylang.std.quantum import qubit, discard_array, h, rx, rz
+from guppylang.std.quantum import qubit, discard_array, h, rx, ry, rz
 from guppylang.std.qsystem import zz_phase
 from math import pi
 import numpy as np
@@ -76,6 +76,8 @@ def build_heis_trotter(n_sites, J, field, t, steps) -> GuppyFunctionDefinition:
     @guppy(max_qubits=n_sites)
     def heis_trotter() -> None:
         qs = array(qubit() for _ in range(comptime(n_sites)))
+        for i in range(comptime(n_sites)):
+            ry(qs[i], angle(0.25 * (1 - 2 * (i % 2))))
         dt = comptime(t / steps)
 
         for _ in range(comptime(steps)):

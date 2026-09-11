@@ -74,7 +74,8 @@ def _prepare_initial_state(num_sites: int, angle: float) -> "QuantumVariable":
     _require_qrisp()
     qv = QuantumVariable(num_sites)
     if angle != 0.0:
-        ry(angle, qv)
+        for i in range(num_sites):
+            ry((-1)**i * angle, qv[i])
     return qv
 
 

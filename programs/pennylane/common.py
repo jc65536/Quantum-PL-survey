@@ -62,6 +62,8 @@ def heis_trotter_state(num_sites: int, J: float, field: float, total_time: float
     H = _heis_hamiltonian(num_sites, J, field)
 
     def build():
+        for q in range(num_sites):
+            qml.RY((-1)**q * np.pi / 4, wires=q)
         qml.ApproxTimeEvolution(H, time=total_time, n=steps)
 
     return _run_qnode(num_sites, build)

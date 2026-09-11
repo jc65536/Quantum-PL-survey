@@ -7,7 +7,7 @@ from typing import List, Sequence, Tuple
 
 import numpy as np
 from pyquil import Program
-from pyquil.gates import H, X, Y, Z
+from pyquil.gates import H, X, Y, Z, RY
 from pyquil.quil import DefGate
 
 from ..common import pauli_models
@@ -185,4 +185,6 @@ def heis_lcu_state(num_sites: int, J: float, field: float, total_time: float) ->
     H = pauli_models.heisenberg_pauli_terms(num_sites, J, field)
     gamma = pauli_models.taylor_coefficients(H, total_time)
     weights, paulis, phases = pauli_models.lcu_weights_from_gamma(gamma)
-    return _build_lcu_state(num_sites, weights, paulis, phases)
+    prog, m = build_lcu_program(num_sites, weights, paulis, phases)
+    initial = Program(RY((-1)**q * np.pi / 4, q) for q in range(num_sites))
+    return _simulate_and_project(initial + prog, num_sites, m)

@@ -202,13 +202,15 @@ def build_lcu_block(
     )
 
 
-def _simulate_block(block: LCUBlockEncoding) -> Tuple[np.ndarray, List[int]]:
+def _simulate_block(block: LCUBlockEncoding, init_angle: float = 0.0) -> Tuple[np.ndarray, List[int]]:
     cbloq = block.decompose_bloq()
     init_quregs = get_named_qubits(block.signature)
     qm = InteropQubitManager(cirq.ops.SimpleQubitManager())
     circuit, quregs_out = cbloq.to_cirq_circuit_and_quregs(
         qubit_manager=qm, **init_quregs
     )
+
+    circuit = cirq.Circuit(cirq.ry((-1)**i * init_angle).on(q) for i, q in enumerate(init_quregs["system"].flat)) + circuit
 
     # Qubits corresponding to the named registers in the block signature.
     sig_qubits = merge_qubits(block.signature, **quregs_out)
@@ -246,8 +248,8 @@ def _extract_system_state(
     return vec / norm
 
 
-def simulate_lcu_state(block: LCUBlockEncoding, num_system: int) -> np.ndarray:
-    state, bits_per_register = _simulate_block(block)
+def simulate_lcu_state(block: LCUBlockEncoding, num_system: int, init_angle: float = 0.0) -> np.ndarray:
+    state, bits_per_register = _simulate_block(block, init_angle)
     reg_names = [reg.name for reg in block.signature]
     system_index = reg_names.index("system")
     vec = _extract_system_state(state, bits_per_register, system_index)
@@ -274,7 +276,7 @@ def heis_lcu_state(
     gamma = pauli_models.taylor_coefficients(H, time)
     paulis, weights, alpha = taylor_terms_to_paulis(gamma)
     block = build_lcu_block(paulis, weights, precision=precision)
-    state = simulate_lcu_state(block, num_sites)
+    state = simulate_lcu_state(block, num_sites, init_angle=np.pi / 4)
     return state * alpha / np.linalg.norm(state * alpha)
 
 
@@ -405,8 +407,8 @@ def heis_trotter_state(
     circuit = cirq.Circuit()
     dt = total_time / steps
     # Small tilt away from |0...0> to seed dynamics.
-    for q in qubits:
-        circuit.append(cirq.ry(init_angle).on(q))
+    for i, q in enumerate(qubits):
+        circuit.append(cirq.ry((-1)**i * init_angle).on(q))
     for _ in range(steps):
         pair_bloq = HeisenbergPairUnitary(angle_j=J * dt, angle_field=field * dt)
         for i in range(num_sites - 1):

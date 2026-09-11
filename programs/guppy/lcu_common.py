@@ -2,7 +2,8 @@
 from guppylang import guppy
 from guppylang.defs import GuppyFunctionDefinition
 from guppylang.std.builtins import comptime, array, panic
-from guppylang.std.quantum import discard_array, measure_array, qubit, reset, x
+from guppylang.std.quantum import discard_array, measure_array, qubit, reset, x, ry
+from guppylang.std.angles import angle
 from guppylang.std.debug import state_result
 
 from pytket import Circuit
@@ -90,7 +91,7 @@ def build_select(paulis: list[str], phases: list[str]) -> GuppyFunctionDefinitio
     return select
 
 
-def build_lcu(coeffs: list[float], paulis: list[str], phases: list[str], no_loop: bool):
+def build_lcu(coeffs: list[float], paulis: list[str], phases: list[str], no_loop: bool, init_angle: float = 0.0):
     m = math.ceil(math.log2(len(coeffs)))
     M = 2 ** m
     n = len(paulis[0])
@@ -116,6 +117,7 @@ def build_lcu(coeffs: list[float], paulis: list[str], phases: list[str], no_loop
             ctrl = array(qubit() for _ in range(comptime(m)))
             for i in range(len(opr)):
                 reset(opr[i])
+                ry(opr[i], angle(comptime(init_angle) * (1 - 2 * (i % 2))))
             reset(phase_qb[0])
             x(phase_qb[0])
 
@@ -163,8 +165,8 @@ def build_lcu(coeffs: list[float], paulis: list[str], phases: list[str], no_loop
     return lcu
 
 
-def lcu_state(coeffs, paulis, phases, no_loop: bool):
-    lcu = build_lcu(coeffs, paulis, phases, no_loop)
+def lcu_state(coeffs, paulis, phases, no_loop: bool, init_angle: float = 0.0):
+    lcu = build_lcu(coeffs, paulis, phases, no_loop, init_angle)
     res = lcu.emulator().statevector_sim().with_shots(1).run()
 
     states = res.partial_state_dicts()[0]

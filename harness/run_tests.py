@@ -187,6 +187,11 @@ def compute_reference(case: Case) -> np.ndarray | list[int]:
         raise ValueError(f"Unknown model: {case.model}")
 
     psi0 = zero_state(num_sites)
+    if case.model == "heis":
+        # Alternating Ry(+/-pi/4)
+        psi0 = np.array([1.0 + 0.0j])
+        for i in range(num_sites):
+            psi0 = np.kron(psi0, [np.cos(np.pi / 8), (-1)**i * np.sin(np.pi / 8)])
     return time_evolve(H, psi0, total_time)
 
 
@@ -215,7 +220,7 @@ CASES: List[Case] = [
         model="heis",
         config={
             "num_sites": 3,
-            "time": 0.3,
+            "time": 0.25,
             "params": {"J": 0.8, "field": 0.2, "trotter_steps": 4},
         },
     ),
@@ -225,7 +230,7 @@ CASES: List[Case] = [
         config={
             "num_sites": 3,
             "num_ancilla": 5,
-            "time": 0.3,
+            "time": 0.25,
             "params": {"J": 0.8, "field": 0.2, "lcu_precision": 0.1},
         },
     ),

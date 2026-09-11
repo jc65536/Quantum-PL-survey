@@ -139,7 +139,7 @@ def trotterize_heisenberg_xxx(
     """Construct a Lie–Trotter circuit for the Heisenberg XXX Hamiltonian with a field."""
     ps_xx, ps_yy, ps_zz, ps_field = _heis_pauli_sums(num_sites, J, field)
     qubits = _sorted_qubits_from_sums(ps_xx, ps_yy, ps_zz, ps_field)
-    circuit = cirq.Circuit()
+    circuit = cirq.Circuit(cirq.ry((-1)**i * np.pi / 4).on(q) for i, q in enumerate(qubits))
     dt = time / steps
 
     exp_xx = cirq.PauliSumExponential(ps_xx, exponent=-dt)

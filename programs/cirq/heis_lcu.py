@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+import numpy as np
 from typing import Any, Dict, List, Sequence, Tuple
 
 import cirq
@@ -35,7 +36,7 @@ def _build_lcu_circuit(
     index = cirq.LineQubit.range(num_sites, num_sites + m)
     phase = cirq.LineQubit(num_sites + m)
 
-    circuit = cirq.Circuit()
+    circuit = cirq.Circuit(cirq.ry((-1)**i * np.pi / 4).on(q) for i, q in enumerate(system))
     circuit.append(cirq.X(phase))
 
     prepare_gate = lcu_common.prepare_gate_from_amplitudes(amps)

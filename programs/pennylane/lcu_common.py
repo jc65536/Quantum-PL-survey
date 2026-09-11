@@ -71,6 +71,7 @@ def lcu_state(
     weights: List[float],
     paulis: List[str],
     phases: List[str],
+    init_angle: float = 0.0,
 ) -> np.ndarray:
     L = len(weights)
     if L == 0:
@@ -94,6 +95,8 @@ def lcu_state(
 
     @qml.qnode(dev)
     def circuit():
+        for q in system:
+            qml.RY((-1)**q * init_angle, wires=q)
         qml.PauliX(phase)
         qml.MottonenStatePreparation(amps, wires=index)
         controls = index
@@ -121,5 +124,5 @@ def heis_lcu_state(num_sites: int, J: float, field: float, total_time: float) ->
     H = pauli_models.heisenberg_pauli_terms(num_sites, J, field)
     gamma = pauli_models.taylor_coefficients(H, total_time)
     weights, paulis, phases = pauli_models.lcu_weights_from_gamma(gamma)
-    return lcu_state(num_sites, weights, paulis, phases)
+    return lcu_state(num_sites, weights, paulis, phases, init_angle=np.pi / 4)
 

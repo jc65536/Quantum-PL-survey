@@ -148,4 +148,7 @@ def heis_lcu_state(num_sites: int, J: float, field: float, total_time: float) ->
     gamma = pauli_models.taylor_coefficients(H, total_time)
     weights, paulis, phases = pauli_models.lcu_weights_from_gamma(gamma)
     circuit, m = build_lcu_circuit(num_sites, weights, paulis, phases)
-    return simulate_block_state(circuit, num_sites, m)
+    initial = QuantumCircuit(circuit.num_qubits)
+    for q in range(num_sites):
+        initial.ry((-1)**q * np.pi / 4, q)
+    return simulate_block_state(initial.compose(circuit), num_sites, m)

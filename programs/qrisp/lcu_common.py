@@ -1,6 +1,6 @@
 from typing import Dict
 
-from qrisp import QuantumVariable, inner_LCU, prepare, x,y,z, gphase
+from qrisp import QuantumVariable, inner_LCU, prepare, x,y,z, gphase, ry
 import numpy as np
 
 from ..common import pauli_models
@@ -17,7 +17,7 @@ def substate(state: np.ndarray, nqubits: int) -> np.ndarray:
     return new_state / norm;
 
 
-def lcu(num_sites: int, H: Dict[str, complex], t: float) -> np.ndarray:
+def lcu(num_sites: int, H: Dict[str, complex], t: float, init_angle: float = 0.0) -> np.ndarray:
     gamma = pauli_models.taylor_coefficients(H, t)
     weights, paulis, phases = pauli_models.lcu_weights_from_gamma(gamma)
 
@@ -39,6 +39,8 @@ def lcu(num_sites: int, H: Dict[str, complex], t: float) -> np.ndarray:
 
     def operand_prep():
         operand = QuantumVariable(num_sites)
+        for i in range(num_sites):
+            ry((-1)**i * init_angle, operand[i])
         return operand
 
     def state_prep(case):

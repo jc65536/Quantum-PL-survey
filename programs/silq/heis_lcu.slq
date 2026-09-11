@@ -2,7 +2,7 @@ import lcu_common;
 
 def Heisenberg_LCU[J:!ℝ,B:!ℝ][t:!ℝ][m:!ℕ,n:!ℕ](qs:𝔹^n) mfree{
 	assert(n>1);
-	coef := vector(3*(n sub 1),J/4)~vector(n,B);
+	coef := vector(3*(n sub 1),J)~vector(n,B);
 	ind := [];
 	for k in [0..n sub 1){
 		ind ~= [(0:!ℕ,3*2^k),(3*2^k,0:!ℕ),(3*2^k,3*2^k)];
@@ -11,9 +11,10 @@ def Heisenberg_LCU[J:!ℝ,B:!ℝ][t:!ℝ][m:!ℕ,n:!ℕ](qs:𝔹^n) mfree{
 	(ind,coef) := taylor2_terms(ind coerce _^(3*(n sub 1)+n),coef,t);
 	k := ind.length;
 	assert(m == (floor(log₂(k-1))+1 coerce !ℕ));
+	for i in [0..n){ qs[i] := rotY(if i%2=0 then π/4 else -π/4, qs[i]); }
 	return pauli_LCU[m,n,k](qs,ind coerce _^k,coef coerce _^k);
 }
 
 def main(){
-	 return postselection[__NUM_ANCILLA__,__NUM_SITES__](0:uint[__NUM_SITES__] as B^__NUM_SITES__,Heisenberg_LCU[-__J__,-__FIELD__][__TOTAL_TIME__][__NUM_ANCILLA__,__NUM_SITES__]);
+	 return postselection[__NUM_ANCILLA__,__NUM_SITES__](0:uint[__NUM_SITES__] as B^__NUM_SITES__,Heisenberg_LCU[__J__,__FIELD__][__TOTAL_TIME__][__NUM_ANCILLA__,__NUM_SITES__]);
 }

@@ -8,6 +8,8 @@ version of Shor's algorithm, for a total of five programs in each language.
 We provide a testing harness that measures the fidelity and execution times
 of our programs, as well as scripts to generate the tables in our paper.
 
+See [arXiv:2606.26254](https://arxiv.org/abs/2606.26254) for our paper.
+
 ## Repository Layout
 
 - `programs/` – Reference implementations grouped by language (Cirq, CUDA-Q,

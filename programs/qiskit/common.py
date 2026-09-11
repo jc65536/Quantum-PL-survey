@@ -67,4 +67,8 @@ def trotterize_heisenberg_xxx(
 ) -> Tuple[QuantumCircuit, Sequence[int]]:
     """Build a Lie–Trotter circuit for the Heisenberg XXX chain with a field."""
     H = _heis_sparse_pauli(num_sites, J, field)
-    return _trotterize_sparse_pauli(H, total_time, steps, label="heisenberg_trotter")
+    circuit, qubits = _trotterize_sparse_pauli(H, total_time, steps, label="heisenberg_trotter")
+    initial = QuantumCircuit(num_sites)
+    for q in qubits:
+        initial.ry((-1)**q * np.pi / 4, q)
+    return initial.compose(circuit), qubits

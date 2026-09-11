@@ -209,13 +209,15 @@ def select_unitary(operand: cudaq.qview, ancilla: cudaq.qview,
 
 @cudaq.kernel
 def lcu_circuit(n_operand: int, n_anc: int, angles: List[float],
-                paulis: List[List[int]], phases: List[int], no_loop: bool):
+                paulis: List[List[int]], phases: List[int], no_loop: bool, init_angle: float):
     operand = cudaq.qvector(n_operand + 1)
     ancilla = cudaq.qvector(n_anc)
 
     while True:
         reset(operand)
         reset(ancilla)
+        for i in range(n_operand):
+            ry(init_angle * (1 - 2 * (i % 2)), operand[i])
 
         x(operand[n_operand])  # phase qubit
 
@@ -247,7 +249,7 @@ def lcu_circuit(n_operand: int, n_anc: int, angles: List[float],
             break
 
 
-def lcu(n_sites: int, hamiltonian: cudaq.SpinOperator, t: float, no_loop: bool):
+def lcu(n_sites: int, hamiltonian: cudaq.SpinOperator, t: float, no_loop: bool, init_angle: float = 0.0):
     taylor_coeffs = get_taylor_coeffs(hamiltonian, t)
     weights, paulis, phases = get_lcu_weights(taylor_coeffs)
 
@@ -264,6 +266,6 @@ def lcu(n_sites: int, hamiltonian: cudaq.SpinOperator, t: float, no_loop: bool):
 
     angles = get_rotation_angles(amps)
 
-    state = cudaq.get_state(lcu_circuit, n_sites, n_ancilla, angles, paulis, phases, no_loop)
+    state = cudaq.get_state(lcu_circuit, n_sites, n_ancilla, angles, paulis, phases, no_loop, init_angle)
     state = np.array(state)[:2**n_sites]
     return state

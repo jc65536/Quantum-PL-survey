@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import Any, Dict
 
+import numpy as np
+
 from . import lcu_common
 from ..common import pauli_models
 
@@ -17,7 +19,7 @@ def run_simulation(config: Dict[str, Any]):
 
     H = pauli_models.heisenberg_pauli_terms(num_sites, J, field)
 
-    return lcu_common.lcu(num_sites, H, t)
+    return lcu_common.lcu(num_sites, H, t, init_angle=np.pi / 4)
 
 
 if __name__ == "__main__":
