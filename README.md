@@ -1,4 +1,4 @@
-# A Survey of Quantum Programming Languages
+# A Survey of Quantum Programming Languages (test)
 
 This repository accompanies our ACM CSUR-style survey of ten different quantum
 programming languages. For each language we implement four versions of
