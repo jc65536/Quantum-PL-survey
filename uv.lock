@@ -2650,7 +2650,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "cirq-core", specifier = ">=1.7.0" },
-    { name = "guppylang", specifier = "<1" },
+    { name = "guppylang", specifier = ">=0.21.16" },
     { name = "openfermion", specifier = ">=1.8.1" },
     { name = "pennylane", specifier = ">=0.45.1" },
     { name = "pyquil", specifier = ">=4.21.0" },

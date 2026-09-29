@@ -9,7 +9,7 @@ authors = [
 requires-python = "~=3.11.0"
 dependencies = [
     "cirq-core>=1.7.0",
-    "guppylang<1",
+    "guppylang>=0.21.16",
     "openfermion>=1.8.1",
     "pennylane>=0.45.1",
     "pyquil>=4.21.0",
