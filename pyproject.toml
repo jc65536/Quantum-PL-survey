@@ -7,7 +7,20 @@ authors = [
     { name = "Jason Cheng", email = "jasoncheng224@gmail.com" }
 ]
 requires-python = "~=3.11.0"
-dependencies = []
+dependencies = [
+    "cirq-core>=1.7.0",
+    "guppylang<1",
+    "openfermion>=1.8.1",
+    "pennylane>=0.45.1",
+    "pyquil>=4.21.0",
+    "qiskit>=2.5.2",
+    "qiskit-aer>=0.17.2",
+    "qiskit-ibm-runtime>=0.50.0",
+    "qrisp>=0.5.4",
+    "qsharp>=1.31.0",
+    "qsharp-widgets>=1.32.3",
+    "qualtran>=0.7.0",
+]
 
 [project.scripts]
 quantum-pl-survey = "quantum_pl_survey:main"
